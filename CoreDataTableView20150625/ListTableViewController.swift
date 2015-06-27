@@ -16,16 +16,18 @@ class ListTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        println("テスト。TBのviewDidLoad完了")
     }
     
     override func viewDidAppear(animated: Bool) {
-        
         let appDel: AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
         let context: NSManagedObjectContext = appDel.managedObjectContext!
         let freq = NSFetchRequest(entityName:"List")
         
         mylist = context.executeFetchRequest(freq, error: nil)!
         tableView.reloadData()
+        
+        ("テスト。TBのviewDidAppearALL完了")
         
     }
     
@@ -38,6 +40,8 @@ class ListTableViewController: UITableViewController {
             IVC.item = selectedItem.valueForKey("item") as String
             IVC.quantity = selectedItem.valueForKey("quantity") as String
             IVC.info = selectedItem.valueForKey("info") as String
+//            IVC.time = selectedItem.valueForKey("recordTime") as NSDate
+
             IVC.existingItem = selectedItem
             
         }
@@ -46,17 +50,6 @@ class ListTableViewController: UITableViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        //println("numberOfSectionsInTableView実行。返り値１")
-        return 1
-    }
-    
-    //指定されたセクション(section)のrowの数を戻り値として返す
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //println("指定されたセクション(section)のrowの数。戻り値\(mylist.count)")
-        return mylist.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath?) -> UITableViewCell {
@@ -68,8 +61,9 @@ class ListTableViewController: UITableViewController {
             var itemText = data.valueForKeyPath("item") as String
             var qnt = data.valueForKeyPath("quantity") as String
             var info = data.valueForKeyPath("info") as String
+//            var time = data.valueForKey("recordTime") as NSDate
             cell.textLabel?.text = itemText
-            cell.detailTextLabel?.text = "\(qnt), \(info)"
+            cell.detailTextLabel?.text = "\(qnt), date:\(info)"
         }
         
         return cell
@@ -80,6 +74,7 @@ class ListTableViewController: UITableViewController {
         return true
     }
     
+    //編集モード
     override func tableView(tableView: UITableView?, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath?) {
         
         let appDel: AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
@@ -98,5 +93,77 @@ class ListTableViewController: UITableViewController {
             }
         }
     }
+//    
+//    var _fetchedResultsController: NSFetchedResultsController? = nil
+//    var fetchedResultsController: NSFetchedResultsController {
+//        if _fetchedResultsController != nil {
+//            return _fetchedResultsController!
+//        }
+//        
+//        // get start day and last day for request predicate
+//        
+//        let today:NSDate = NSDate()
+//        let formatter: NSDateFormatter = NSDateFormatter()
+//        formatter.dateFormat = "yyyy/MM/dd HH:mm"
+//        
+//        // calendar and get this month startday and lastday
+//        
+//        let calendar = NSCalendar.currentCalendar()
+//        var components = calendar.components(NSCalendarUnit.YearCalendarUnit|NSCalendarUnit.MonthCalendarUnit|NSCalendarUnit.DayCalendarUnit|NSCalendarUnit.HourCalendarUnit|NSCalendarUnit.MinuteCalendarUnit|NSCalendarUnit.SecondCalendarUnit, fromDate: today)
+//        components.day = 1
+//        components.hour = 0
+//        components.minute = 0
+//        components.second = 0
+//        let startDate:NSDate? = calendar.dateFromComponents(components)
+//        let range = calendar.rangeOfUnit(NSCalendarUnit.CalendarUnitDay, inUnit: NSCalendarUnit.CalendarUnitMonth, forDate: today)
+//        components.day = range.length
+//        components.hour = 23
+//        components.minute = 59
+//        components.second = 59
+//        let lastDate:NSDate? = calendar.dateFromComponents(components)
+//        
+//        // get coredata instances
+//        
+//        let appDel:AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
+//        let context: NSManagedObjectContext? = appDel.managedObjectContext
+//        let sort:NSSortDescriptor = NSSortDescriptor(key: "recordTime", ascending: false)
+//        let predicate:NSPredicate? = NSPredicate(format: "%@ <= recordTime && recordTime <= %@", startDate!, lastDate!)
+//        
+//        let request = NSFetchRequest(entityName: "Record")
+//        request.predicate = predicate
+//        request.sortDescriptors = [sort]
+//        request.returnsObjectsAsFaults = false
+//        
+//        // get an instance of NSFetchedResultsController
+//        let aFetchedResultsController = NSFetchedResultsController(fetchRequest: request, managedObjectContext: context!, sectionNameKeyPath: "sectionIdentifier", cacheName: nil)
+//        _fetchedResultsController = aFetchedResultsController
+//        
+//        var error: NSError? = nil
+//        if !_fetchedResultsController!.performFetch(&error) {
+//            abort()
+//        }
+//        return _fetchedResultsController!
+//    }
+//    
+//    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        var dateString = ""
+//        if let sec = self.fetchedResultsController.sections as? [NSFetchedResultsSectionInfo] {
+//            dateString = sec[section].name!
+//        }
+//        return dateString
+//    }
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        //println("numberOfSectionsInTableView実行。返り値１")
+//        return mylist.count
+        return 1
+    }
+    
+    //指定されたセクション(section)のrowの数を戻り値として返す
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        //println("指定されたセクション(section)のrowの数。戻り値\(mylist.count)")
+//        return mylist[section].numberOfObjects
+        return mylist.count
+    }
+
     
 }

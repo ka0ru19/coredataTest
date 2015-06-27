@@ -17,16 +17,35 @@ class ItemViewController: UIViewController {
     var item: String = ""
     var quantity: String = ""
     var info: String = ""
+//    var time: NSDate! = nil
     var existingItem: NSManagedObject!
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // 現在日時の取得
+//        let today:NSDate = NSDate()
+//        let formatter: NSDateFormatter = NSDateFormatter()
+//        formatter.locale = NSLocale(localeIdentifier: "ja_JP")
+//        formatter.dateFormat = "yyyy/MM/dd HH:mm"
+
+        let time:NSDate = NSDate()
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.locale = NSLocale(localeIdentifier: "ja_JP") // ロケールの設定
+        
+        dateFormatter.timeStyle = .ShortStyle
+        dateFormatter.dateStyle = .ShortStyle
+        info = String(dateFormatter.stringFromDate(time)) // -> 2014/06/24 11:14
+        println(info)
+        
         if (existingItem != nil) {
             textFieldItem.text = item
             textFieldQuantity.text = quantity
             textFieldInfo.text = info
+        } else {
+            textFieldInfo.text = info
+            
         }
         // Do any additional setup after loading the view, typically from a nib.
     }
@@ -42,6 +61,7 @@ class ItemViewController: UIViewController {
             existingItem.setValue(textFieldQuantity.text as String, forKey: "quantity")
             existingItem.setValue(textFieldInfo.text as String, forKey: "info")
             
+            
         } else {
             
             var newItem = Model(entity: en!, insertIntoManagedObjectContext: contxt)
@@ -52,6 +72,8 @@ class ItemViewController: UIViewController {
             println(newItem)
         }
         contxt.save(nil)
+        
+        self.navigationController?.popToRootViewControllerAnimated(true)
         
     }
     @IBAction func cancelTapped(sender: AnyObject) {
